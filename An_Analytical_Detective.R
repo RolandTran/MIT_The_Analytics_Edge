@@ -9,6 +9,7 @@ wrkdir <- getwd()
 wrkdir
 list.files()
 
+
 # P 1.1 Loading the Data
 # reading the file
 mvt <- read.csv("mvtWeek1.csv", stringsAsFactors = FALSE)
@@ -20,11 +21,13 @@ num_obs <- nrow(mvt) #1.1 to see number of row
 num_obs
 cat("There are", num_obs, "rows of data (observations) in the dataset.")
 
+
 # 1.2 how many variables are there in this dataset?
 num_var <- ncol(mvt)
 num_var
 cat("There are", num_var, "variables in this dataset.")
 str(mvt)
+
 
 # 1.3 Using the "max" function, what is the maximum value of the variable "ID"?
 max_ID_var <- max(mvt$ID) #1.3 max function ID
@@ -36,11 +39,13 @@ min_ID_var <- min(mvt$ID)
 min_ID_var
 cat('The min value of the variable "ID" is', min_ID_var, "in this dataset.")
 
+
 # 1.4 What is the min value of the variable "BEAT"
 min_Beat_var <- min(mvt$Beat) #1.4
 min_Beat_var
 cat('The min value of the variable "Beat" is', min_Beat_var, "in this dataset.")
 summary(mvt)
+
 
 # p1.5 How many observations have value TRUE in the Arrest variable (this is the number of crimes for which an arrest was made)?
 True_Arrest_var <- sum(mvt$Arrest == TRUE)#1.5
@@ -50,6 +55,7 @@ cat("There are ", True_Arrest_var, "observations with a TRUE value in the Arrest
 False_Arrest_var <- sum(mvt$Arrest == FALSE)
 False_Arrest_var
 cat("There are ", False_Arrest_var, "observations with a FALSE value in the Arrest variable (this is the number of crimes for which an arrest wasn't made)")
+
 
 # 1.5 alternative
 summary(mvt$Arrest)
@@ -78,6 +84,7 @@ count_ALLEY_LocationDescription <- sum(mvt$LocationDescription == "ALLEY")
 count_ALLEY_LocationDescription
 cat("There were a total of", count_ALLEY_LocationDescription, 'observations with "ALLEY" in the location description.')
 
+
 # 1.6 alternative
 table(mvt$LocationDescription) 
 table_LocationDescription <- table(mvt$LocationDescription)
@@ -89,39 +96,82 @@ cat("There were a total of", ALLEY_LocationDescription_count, 'observations with
 summary(mvt)
 table_LocationDescription 
 
+
 # 2.1 Understanding Dates in R
 # ex7 In what format are the entries in the variable Date?
 mvt$Date[1] #2.1
+cat("The default date entry", mvt$Date[1], "is in Month/Day/Year Hour:Minute format.")
 
 
+# 2.2 Understanding Dates in R
+#ex8 What is the month and year of the median date in our dataset? 
+# Enter your answer as “Month Year”, without the quotes. 
+# (Ex: if the answer was 2008-03-28, you would give the answer “March 2008”, without the quotes.)
 DateConvert <- as.Date(strptime(mvt$Date, "%m/%d/%y %H:%M")) #2.2
 DateConvert
+mvt$Month <- months(DateConvert)
+mvt$Month
+mvt$Weekday <- weekdays(DateConvert)
+mvt$Weekday
 summary(DateConvert)
-date <- as.Date("2006-05-21")#2.2
-date
-month_year <- format(date, "%B %Y")
-print(month_year) #2.2
+median_date <- median(DateConvert) 
+formatted_median_date <- format(median_date, "%B %Y")
+formatted_median_date 
+cat("The month and year of the median date in our dataset is", formatted_median_date,".")
+summary(DateConvert) 
+
+#ex8a find the min and max date
+# first create a string
+formatted_median_date_string <- 'median_date <- median(DateConvert) 
+formatted_median_date <- format(median_date, "%B %Y")
+formatted_median_date 
+cat("The month and year of the median date in our dataset is", formatted_median_date,".")
+summary(DateConvert)'
+formatted_median_date_string # more mess
+print(formatted_median_date_string) # same as above
+cat(formatted_median_date_string)
+
+#switch from median to min;
+formatted_min_date_string <- gsub("median", "min", formatted_median_date_string)
+cat(formatted_min_date_string)
+# paste below
+min_date <- min(DateConvert) 
+formatted_min_date <- format(min_date, "%B %Y")
+formatted_min_date 
+cat("The month and year of the min date in our dataset is", formatted_min_date,".")
 summary(DateConvert)
+# end paste
 
-median_date <- median(DateConvert) #2.2 alternative
-formatted_median <- format(median_date, "%B %Y")
-formatted_median #2.2 alternative
-print(formatted_median)
-summary(DateConvert) #2.2
+# switch from min to max
+formatted_max_date_string <- gsub("min", "max", formatted_min_date_string)
+cat(formatted_max_date_string)
+# paste below
+max_date <- max(DateConvert) 
+formatted_max_date <- format(max_date, "%B %Y")
+formatted_max_date 
+cat("The month and year of the max date in our dataset is", formatted_max_date,".")
+summary(DateConvert)
+# end paste
 
-mvt$Month = months(DateConvert) #2.3
-mvt$Weekday = weekdays(DateConvert) #2.3
-mvt$Date = DateConvert #2.3
+
+# 2.3 ex9 Which month did the fewest motor vehicle thefts occur?
 table(mvt$Month)
 month_counts <- table(mvt$Month) # Count number of observations for each month 2.3
-min_month <- names(month_counts)[which.min(month_counts)] # 2.3 Find month with fewest thefts
-print(min_month)
+month_counts
+min_month <- names(which.min(month_counts)) # 2.3 Find month with fewest thefts
+min_month
+min_month_counts <- month_counts[min_month]
+min_month_counts
 print(paste0("The month with the fewest number of thefts is ", min_month))
-cat("The month with the fewest number of thefts is", min_month, "\n") #2.3 his code uses the cat() function to print the string "The month with the fewest number of thefts is ", followed by the min_month variable, which contains the name of the month with the fewest thefts. The "\n" character is added to create a new line after the output.
-max_month <- names(month_counts)[which.max(month_counts)] 
+cat("The month with the fewest number of thefts is", min_month, " with a total of", min_month_counts, "thefts. \n") #2.3 his code uses the cat() function to print the string "The month with the fewest number of thefts is ", followed by the min_month variable, which contains the name of the month with the fewest thefts. The "\n" character is added to create a new line after the output.
+
+# ex9a which month did the max motor vehicle theft occur
+max_month <- names(which.max(month_counts))
 max_month # 2.3 Find month with most thefts
+max_month_counts <- month_counts[max_month]
+max_month_counts
 print(paste0("The month with the most number of thefts is ", max_month)) #2.3
-cat("The month with the most number of thefts is", max_month, "\n") #2.3
+cat("The month with the most number of thefts is", max_month, "with a total of", max_month_counts, "thefts. \n") #2.3
 
 table(mvt$Weekday) #2.4
 weekday_counts <- table(mvt$Weekday) #2.4 Count number of observations for each weekday
